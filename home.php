@@ -19,7 +19,6 @@ if (!isset($_SESSION['loggedin'])) {
 <body>
     <?php include 'header.php'; ?>
     <div class="container my-5">
-        <!-- <h3 class="my-4 text-center" style="color: indianred;">All Web Apps</h3> -->
         <div class="row">
             <div class="col-md-4">
                 <div class="card mb-4 ">
