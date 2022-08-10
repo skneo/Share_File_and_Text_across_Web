@@ -95,17 +95,15 @@ if (isset($_POST['delete'])) {
             file_put_contents("uploads/index.php", "");
         }
         if ($handle = opendir('uploads/')) {
-            while (false !== ($file = readdir($handle))) {
+            while (($file = readdir($handle)) != false) {
                 if ($file != "." && $file != "..") {
                     if ($file == "index.php")
                         continue;
                     $ctime = filectime("uploads/$file");
-                    $dateTime = date("d-m-Y h:m A", $ctime);
+                    $dateTime = date("d-m-Y h:i A", $ctime);
                     $filedownload = rawurlencode($file);
-                    // echo $filedownload;
                     $size = round(filesize("uploads/" . $file) / (1024));
                     $current_site = $_SERVER['SERVER_NAME'];
-                    // echo $current_site;
                     echo "<div> <b>$sn.</b> $file </div>    
                           <div> <b>File Size:</b> $size kb <b>Uploaded On:</b> $dateTime </div>
                           <div class='mt-2 d-flex'>  

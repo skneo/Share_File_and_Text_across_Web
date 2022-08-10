@@ -38,7 +38,6 @@ if (isset($_GET['delete'])) {
     $showAlert = true;
     $alertClass = "alert-success";
     $alertMsg = "Text deleted";
-    // }
 }
 ?>
 
