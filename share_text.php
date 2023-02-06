@@ -4,10 +4,17 @@ if (!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
 }
 $showAlert = false;
+function validateInput($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
 
 if (isset($_POST['url'])) {
-    $url = $_POST['url'];
-    $tag = $_POST['tag'];
+    $url = validateInput($_POST['url']);
+    $tag = validateInput($_POST['tag']);
     date_default_timezone_set('Asia/Kolkata');
     $curr_date = date('Y-m-d H:i:s');
 
