@@ -66,7 +66,7 @@ if (isset($_POST['delete'])) {
     }
     ?>
     <center>
-        <div class="container my-3 ">
+        <div class="container mt-2 ">
             <form action="share_file.php" method="post" enctype="multipart/form-data">
                 <h4>Select file to upload</h4>
                 <input class="form-control my-3" style="width: 300px;" type="file" name="fileToUpload" id="fileToUpload">
@@ -87,42 +87,72 @@ if (isset($_POST['delete'])) {
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
     <div class="container my-3">
-        <?php
-        date_default_timezone_set('Asia/Kolkata');
-        $sn = 1;
-        if (!is_dir("uploads")) {
-            mkdir("uploads");
-            file_put_contents("uploads/index.php", "");
-        }
-        if ($handle = opendir('uploads/')) {
-            while (($file = readdir($handle)) != false) {
-                if ($file != "." && $file != "..") {
-                    if ($file == "index.php")
-                        continue;
-                    $ctime = filectime("uploads/$file");
-                    $dateTime = date("d-m-Y h:i A", $ctime);
-                    $filedownload = rawurlencode($file);
-                    $size = round(filesize("uploads/" . $file) / (1024));
-                    $current_site = $_SERVER['SERVER_NAME'];
-                    echo "<div> <b>$sn.</b> $file </div>    
-                          <div> <b>File Size:</b> $size kb <b>Uploaded On:</b> $dateTime </div>
-                          <div class='mt-2 d-flex'>  
-                               <div >
-                                <a href=\"uploads/$filedownload\" class='btn-sm btn btn-success'>View</a>
-                                <a href=\"uploads/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
-                                <a href=\"scan_qr_code.php?qr_url=http://$current_site/uploads/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
-                                </div>
-                                <div class='float-start'>
-                                    <form method='post' class='mx-2' action='share_file.php'>
-                                        <button onclick=\"return confirm('Sure to delete $file ?')\" type='submit' class='btn-sm btn btn-danger' name='delete' value=\"$file\">Delete</button>
-                                    </form> 
-                                </div>
-                          </div><hr>";
-                    $sn = $sn + 1;
+        <table id="table_id" class="table-light table table-striped table-bordered w-100">
+            <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>File Name</th>
+                    <th>Size </th>
+                    <th>Uploaded On</th>
+                    <th style='min-width:300px'>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                date_default_timezone_set('Asia/Kolkata');
+                $sn = 1;
+                if (!is_dir("uploads")) {
+                    mkdir("uploads");
+                    file_put_contents("uploads/index.php", "");
                 }
-            }
-        }
-        ?>
+                if ($handle = opendir('uploads/')) {
+                    while (($file = readdir($handle)) != false) {
+                        if ($file != "." && $file != "..") {
+                            if ($file == "index.php")
+                                continue;
+                            $ctime = filectime("uploads/$file");
+                            $dateTime = date("d-m-Y h:i A", $ctime);
+                            $filedownload = rawurlencode($file);
+                            $size = round(filesize("uploads/" . $file) / (1024));
+                            $current_site = $_SERVER['SERVER_NAME'];
+                            echo "<tr>
+                                    <td>$sn</td>
+                                    <td><a href=\"uploads/$filedownload\">$file</a></td>
+                                    <td>$size kb</td>
+                                    <td>$dateTime</td>
+                                    <td>
+                                        <div class='mt-2 d-flex'>  
+                                            <div>
+                                                <a href=\"uploads/$filedownload\" class='btn-sm btn btn-success'>View</a>
+                                                <a href=\"uploads/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
+                                                <a href=\"scan_qr_code.php?qr_url=http://$current_site/uploads/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
+                                            </div>
+                                            <div class='float-start'>
+                                                <form method='post' class='mx-2' action='share_file.php'>
+                                                    <button onclick=\"return confirm('Sure to delete $file ?')\" type='submit' class='btn-sm btn btn-danger' name='delete' value=\"$file\">Delete</button>
+                                                </form> 
+                                            </div>
+                                        </div
+                                    </td>
+                                </tr>";
+                            $sn = $sn + 1;
+                        }
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+        <!-- for data table -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js"> </script>
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"> </script>
+        <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+        <script>
+            $(document).ready(function() {
+                $('#table_id').DataTable({
+                    "scrollX": true
+                });
+            });
+        </script>
     </div>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
