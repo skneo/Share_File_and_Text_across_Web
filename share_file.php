@@ -112,19 +112,19 @@ if (isset($_POST['delete'])) {
                             if ($file == "index.php")
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
-                            $dateTime = date("d-m-Y h:i A", $ctime);
+                            $dateTime = date("Y-m-d H:i:s", $ctime);
                             $filedownload = rawurlencode($file);
                             $size = round(filesize("$uploads_dir/" . $file) / (1024));
                             $current_site = $_SERVER['SERVER_NAME'];
                             echo "<tr>
                                     <td>$sn</td>
-                                    <td><a href=\"$uploads_dir/$filedownload\">$file</a></td>
+                                    <td><a href=\"preview_file.php?file=$filedownload\">$file</a></td>
                                     <td>$size kb</td>
                                     <td>$dateTime</td>
                                     <td>
                                         <div class='mt-2 d-flex'>  
                                             <div>
-                                                <a href=\"$uploads_dir/$filedownload\" class='btn-sm btn btn-success'>View</a>
+                                                <a href=\"preview_file.php?file=$filedownload\" class='btn-sm btn btn-success'>View</a>
                                                 <a href=\"$uploads_dir/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
                                                 <a href=\"scan_qr_code.php?qr_url=http://$current_site/$uploads_dir/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
                                             </div>
