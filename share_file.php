@@ -3,9 +3,10 @@ session_start();
 if (!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
 }
+include 'uploads_dir.php';
 $showAlert = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $target_dir = "uploads/";
+    $target_dir = "$uploads_dir/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
     $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     //check file type
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 }
 if (isset($_POST['delete'])) {
     $fileName = $_POST['delete'];
-    $file = "uploads/$fileName";
+    $file = "$uploads_dir/$fileName";
     if (file_exists($file)) {
         unlink($file);
         $showAlert = true;
@@ -101,31 +102,31 @@ if (isset($_POST['delete'])) {
                 <?php
                 date_default_timezone_set('Asia/Kolkata');
                 $sn = 1;
-                if (!is_dir("uploads")) {
-                    mkdir("uploads");
-                    file_put_contents("uploads/index.php", "");
+                if (!is_dir("$uploads_dir")) {
+                    mkdir("$uploads_dir");
+                    file_put_contents("$uploads_dir/index.php", "");
                 }
-                if ($handle = opendir('uploads/')) {
+                if ($handle = opendir("$uploads_dir/")) {
                     while (($file = readdir($handle)) != false) {
                         if ($file != "." && $file != "..") {
                             if ($file == "index.php")
                                 continue;
-                            $ctime = filectime("uploads/$file");
+                            $ctime = filectime("$uploads_dir/$file");
                             $dateTime = date("d-m-Y h:i A", $ctime);
                             $filedownload = rawurlencode($file);
-                            $size = round(filesize("uploads/" . $file) / (1024));
+                            $size = round(filesize("$uploads_dir/" . $file) / (1024));
                             $current_site = $_SERVER['SERVER_NAME'];
                             echo "<tr>
                                     <td>$sn</td>
-                                    <td><a href=\"uploads/$filedownload\">$file</a></td>
+                                    <td><a href=\"$uploads_dir/$filedownload\">$file</a></td>
                                     <td>$size kb</td>
                                     <td>$dateTime</td>
                                     <td>
                                         <div class='mt-2 d-flex'>  
                                             <div>
-                                                <a href=\"uploads/$filedownload\" class='btn-sm btn btn-success'>View</a>
-                                                <a href=\"uploads/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
-                                                <a href=\"scan_qr_code.php?qr_url=http://$current_site/uploads/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
+                                                <a href=\"$uploads_dir/$filedownload\" class='btn-sm btn btn-success'>View</a>
+                                                <a href=\"$uploads_dir/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
+                                                <a href=\"scan_qr_code.php?qr_url=http://$current_site/$uploads_dir/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
                                             </div>
                                             <div class='float-start'>
                                                 <form method='post' class='mx-2' action='share_file.php'>
@@ -149,7 +150,10 @@ if (isset($_POST['delete'])) {
         <script>
             $(document).ready(function() {
                 $('#table_id').DataTable({
-                    "scrollX": true
+                    "scrollX": true,
+                    "order": [
+                        [0, "desc"]
+                    ],
                 });
             });
         </script>
