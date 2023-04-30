@@ -25,7 +25,7 @@ $file_path = "$uploads_dir/$file"
     <div class="container mb-3">
         <a href="share_file.php" class="btn btn-primary btn-sm my-1">&larr; Back</a>
         <object data="<?php echo $file_path ?>" type="application/pdf" width="100%" height="1080px">
-            <p>Your web browser doesn't have a PDF plugin. Instead you can <a href="<?php echo $file_path ?>">click here to download the file.</a></p>
+            <p>File preview not available. Instead you can <a href="<?php echo $file_path ?>">click here to download the file.</a></p>
         </object>
 
     </div>
