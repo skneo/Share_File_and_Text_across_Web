@@ -1,5 +1,5 @@
 # Share_File_and_Text_across_Web
-Web app to share file and text across web
+Web app to share file and text
 
 Make your own File and text sharing app through which you will be able to share files and text across web
 
