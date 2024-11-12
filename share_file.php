@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         }
     }
 }
-if (isset($_POST['delete'])) {
-    $fileName = $_POST['delete'];
+if (isset($_GET['delete'])) {
+    $fileName = $_GET['delete'];
     $file = "$uploads_dir/$fileName";
     if (file_exists($file)) {
         unlink($file);
@@ -87,7 +87,7 @@ if (isset($_POST['delete'])) {
         }
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
-    <div class="container my-3">
+    <div class="container my-3 table-responsive">
         <table id="table_id" class="table-light table table-striped table-bordered w-100">
             <thead>
                 <tr>
@@ -95,7 +95,7 @@ if (isset($_POST['delete'])) {
                     <th>File Name</th>
                     <th>Size </th>
                     <th>Uploaded On</th>
-                    <th style='min-width:300px'>Actions</th>
+                    <th style='min-width:50px'>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,18 +122,8 @@ if (isset($_POST['delete'])) {
                                     <td>$size kb</td>
                                     <td>$dateTime</td>
                                     <td>
-                                        <div class='mt-2 d-flex'>  
-                                            <div>
-                                                <a href=\"preview_file.php?file=$filedownload\" class='btn-sm btn btn-success'>View</a>
-                                                <a href=\"$uploads_dir/$filedownload\" download class='btn-sm btn btn-primary mx-1'>Download</a>
-                                                <a href=\"scan_qr_code.php?qr_url=http://$current_site/$uploads_dir/$filedownload\" class='btn-sm btn btn-info'>QR Code</a>
-                                            </div>
-                                            <div class='float-start'>
-                                                <form method='post' class='mx-2' action='share_file.php'>
-                                                    <button onclick=\"return confirm('Sure to delete $file ?')\" type='submit' class='btn-sm btn btn-danger' name='delete' value=\"$file\">Delete</button>
-                                                </form> 
-                                            </div>
-                                        </div
+                                        <a href=\"$uploads_dir/$filedownload\" download class='me-2'>Download</a>
+                                        <a onclick=\"return confirm('Sure to delete $file ?')\" href='share_file.php?delete=$file'>Delete</a>
                                     </td>
                                 </tr>";
                             $sn = $sn + 1;
@@ -143,20 +133,6 @@ if (isset($_POST['delete'])) {
                 ?>
             </tbody>
         </table>
-        <!-- for data table -->
-        <script src="https://code.jquery.com/jquery-3.5.1.js"> </script>
-        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"> </script>
-        <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
-        <script>
-            $(document).ready(function() {
-                $('#table_id').DataTable({
-                    "scrollX": true,
-                    "order": [
-                        [0, "desc"]
-                    ],
-                });
-            });
-        </script>
     </div>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
