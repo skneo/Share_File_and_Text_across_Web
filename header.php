@@ -22,18 +22,14 @@ if (!isset($_SESSION['loggedin'])) {
             </ul>
             <?php
             $current_site = $_SERVER['SERVER_NAME'];
-            echo "<a class='btn btn-primary me-2' aria-current='page' href='scan_qr_code.php?qr_url=http://$current_site'>QR Code</a>";
+            echo "<a class='btn btn-sm btn-primary me-2' aria-current='page' href='scan_qr_code.php?qr_url=http://$current_site'>QR Code</a>";
             ?>
-            <a class="btn btn-info me-2" aria-current="page" href="change_password.php">Change Password</a>
-            <a href="logout.php" class="btn btn-danger">Logout</a>
+            <a class="btn btn-info me-2 btn-sm" aria-current="page" href="change_password.php">Change Password</a>
+            <a href="logout.php" class="btn btn-danger btn-sm">Logout</a>
         </div>
     </div>
 </nav>
 <style>
-    /* body {
-        background-color: skyblue;
-    } */
-
     @media only screen and (min-width: 960px) {
         .navbar .navbar-nav .nav-item .nav-link {
             padding: 0 0.5em;
