@@ -4,45 +4,6 @@ if (!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
 }
 include 'uploads_dir.php';
-$showAlert = false;
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $target_dir = "$uploads_dir/";
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-    $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    //check file type
-    if ($file_type == 'htm' or $file_type == 'html' or $file_type == 'php' or $file_type == 'asp' or $file_type == 'aspx' or $file_type == 'jsp' or $file_type == 'htaccess') {
-        $showAlert = true;
-        $alertMsg =  "Sorry, this file type not allowed, upload it by making zip file.";
-        $alertClass = "alert-danger";
-    }
-    // Check if file already exists
-    else if (file_exists($target_file)) {
-        $showAlert = true;
-        $alertMsg =  "file of this name already exists, please change file name then try to upload";
-        $alertClass = "alert-danger";
-    } else {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            $filename = htmlspecialchars(basename($_FILES["fileToUpload"]["name"]));
-            $showAlert = true;
-            $alertMsg =  "The file $filename has been uploaded";
-            $alertClass = "alert-success";
-        } else {
-            $showAlert = true;
-            $alertMsg =  "Sorry, there was an error uploading your file.";
-            $alertClass = "alert-danger";
-        }
-    }
-}
-if (isset($_GET['delete'])) {
-    $fileName = $_GET['delete'];
-    $file = "$uploads_dir/$fileName";
-    if (file_exists($file)) {
-        unlink($file);
-        $showAlert = true;
-        $alertClass = "alert-success";
-        $alertMsg = "File deleted";
-    }
-}
 ?>
 <!doctype html>
 <html lang='en'>
@@ -59,16 +20,14 @@ if (isset($_GET['delete'])) {
 <body>
     <?php
     include 'header.php';
-    if ($showAlert) {
-        echo "<div class='alert $alertClass alert-dismissible fade show py-2 mb-0' role='alert'>
-                <strong >$alertMsg</strong>
-                <button type='button' class='btn-close pb-2' data-bs-dismiss='alert' aria-label='Close'></button>
-            </div>";
+    if (isset($_SESSION['alert'])) {
+        echo $_SESSION['alert'];
+        unset($_SESSION['alert']);
     }
     ?>
     <center>
         <div class="container mt-2 ">
-            <form action="share_file.php" method="post" enctype="multipart/form-data">
+            <form action="handle_files.php" method="post" enctype="multipart/form-data">
                 <h4>Select file to upload</h4>
                 <input class="form-control my-3" style="width: 300px;" type="file" name="fileToUpload" id="fileToUpload">
                 <input class="btn btn-primary" onclick="loader()" type="submit" style="width: 300px;" value="Upload File" name="submit">
@@ -88,14 +47,15 @@ if (isset($_GET['delete'])) {
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
     <div class="container my-3 table-responsive">
+        <small>* Files older than 3 days will be deleted automatically</small>
         <table id="table_id" class="table-light table table-striped table-bordered w-100">
             <thead>
                 <tr>
                     <th>SN</th>
-                    <th>File Name</th>
-                    <th>Size </th>
-                    <th>Uploaded On</th>
-                    <th style='min-width:50px'>Actions</th>
+                    <th style='min-width:300px'>File Name</th>
+                    <th style='min-width:80px'>Size </th>
+                    <th style='min-width:180px'>Uploaded On</th>
+                    <th style='min-width:150px'>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,15 +67,21 @@ if (isset($_GET['delete'])) {
                     file_put_contents("$uploads_dir/index.php", "");
                 }
                 if ($handle = opendir("$uploads_dir/")) {
+                    $currentTime = time();
                     while (($file = readdir($handle)) != false) {
                         if ($file != "." && $file != "..") {
                             if ($file == "index.php")
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
+                            $timeDiff = $currentTime - $ctime;
+                            if ($timeDiff > 259200) {  // 3 days = 259200 seconds
+                                if (unlink("$uploads_dir/$file")) {
+                                    continue;
+                                }
+                            }
                             $dateTime = date("Y-m-d H:i:s", $ctime);
                             $filedownload = rawurlencode($file);
                             $size = round(filesize("$uploads_dir/" . $file) / (1024));
-                            $current_site = $_SERVER['SERVER_NAME'];
                             echo "<tr>
                                     <td>$sn</td>
                                     <td><a href=\"preview_file.php?file=$filedownload\">$file</a></td>
@@ -123,7 +89,7 @@ if (isset($_GET['delete'])) {
                                     <td>$dateTime</td>
                                     <td>
                                         <a href=\"$uploads_dir/$filedownload\" download class='me-2'>Download</a>
-                                        <a onclick=\"return confirm('Sure to delete $file ?')\" href='share_file.php?delete=$file'>Delete</a>
+                                        <a onclick=\"return confirm('Sure to delete $file ?')\" href='handle_files.php?delete=$file'>Delete</a>
                                     </td>
                                 </tr>";
                             $sn = $sn + 1;
