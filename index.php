@@ -1,25 +1,16 @@
 <?php
 session_start();
 $showAlert = false;
-
-$cookie_name = "qiurypsfgalvcbnz";
-if(isset($_COOKIE[$cookie_name]) and $_COOKIE[$cookie_name]=="4893146254691576") {
-    $_SESSION['loggedin']=true;
-}
-
 if (isset($_SESSION['loggedin'])) {
     header('Location: home.php');
+    exit;
 }
-
 include 'password.php';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['password'] == $password) {
         $_SESSION['loggedin'] = true;
-        $cookie_value = "4893146254691576";
-        //set cookie to remain loggedin for a week
-        setcookie($cookie_name, $cookie_value, time() + (86400 * 7), "/"); // 86400 = 1 day
         header('Location: home.php');
+        exit;
     } else {
         $showAlert = true;
         $alertClass = "alert-danger";

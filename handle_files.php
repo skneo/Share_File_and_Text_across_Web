@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
+    exit;
 }
 include 'uploads_dir.php';
 $showAlert = false;

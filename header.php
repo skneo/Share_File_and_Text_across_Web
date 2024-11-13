@@ -2,6 +2,7 @@
 // session_start();
 if (!isset($_SESSION['loggedin'])) {
     header('Location: index.php');
+    exit;
 }
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
