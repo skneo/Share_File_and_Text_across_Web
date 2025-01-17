@@ -29,10 +29,10 @@ include 'uploads_dir.php';
     }
     ?>
     <center>
-        <div class="container mt-2 ">
+        <div class="container mt-3 ">
             <form action="handle_files.php" method="post" enctype="multipart/form-data">
-                <h4>Select file to upload</h4>
-                <input class="form-control my-3" style="width: 300px;" type="file" name="fileToUpload[]" id="fileToUpload" multiple>
+                <input class="form-control" style="width: 300px;" type="file" name="fileToUpload[]" id="fileToUpload" multiple required>
+                <small>* More than 1 file can be uploaded at a time</small><br>
                 <input class="btn btn-primary" onclick="loader()" type="submit" style="width: 300px;" value="Upload File" name="submit">
             </form>
             <div class="d-flex justify-content-center my-3 d-none" id="pageLoader">
@@ -50,7 +50,7 @@ include 'uploads_dir.php';
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
     <div class="container my-3 table-responsive">
-        <!-- <small>* Files older than 4 hours will be deleted automatically</small> -->
+        <small>* Files older than 4 hours will be deleted automatically</small>
         <table id="table_id" class="table-light table table-striped table-bordered w-100">
             <thead>
                 <tr>
@@ -77,11 +77,11 @@ include 'uploads_dir.php';
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
                             $timeDiff = $currentTime - $ctime;
-                            // if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
-                            //     if (unlink("$uploads_dir/$file")) {
-                            //         continue;
-                            //     }
-                            // }
+                            if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
+                                if (unlink("$uploads_dir/$file")) {
+                                    continue;
+                                }
+                            }
                             $dateTime = date("Y-m-d H:i:s", $ctime);
                             $filedownload = rawurlencode($file);
                             $size = round(filesize("$uploads_dir/" . $file) / (1024));

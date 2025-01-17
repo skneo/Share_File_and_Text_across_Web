@@ -8,8 +8,8 @@ include 'uploads_dir.php';
 $showAlert = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $target_dir = "$uploads_dir/";
-    $error = 0;
     $alerts = array();
+    $total_uploaded = 0;
     for ($i = 0; $i < count($_FILES['fileToUpload']['name']); $i++) {
         $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"][$i]);
         $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             array_push($alerts, "<div class='py-2 alert alert-danger' role='alert'>
                     <strong >Sorry, $file_type file type not allowed, upload it by making zip file.</strong>
                 </div>");
-            $error++;
         }
         // Check if file already exists
         else if (file_exists($target_file)) {
@@ -26,21 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             array_push($alerts, "<div class='py-2 alert alert-danger' role='alert'>
                     <strong >$filename already exists, please change file name then try to upload.</strong>
                 </div>");
-            $error++;
         } else {
             if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) {
-                $filename = htmlspecialchars(basename($_FILES["fileToUpload"]["name"][$i]));
-                array_push($alerts, "<div class='py-2 alert alert-success' role='alert'>
-                    <strong >The file $filename has been uploaded.</strong>
-                </div>");
+                $total_uploaded++;
             } else {
                 array_push($alerts, "<div class='py-2 alert alert-danger' role='alert'>
                     <strong >Sorry, there was an error uploading your file.</strong>
                 </div>");
-                $error++;
             }
         }
     }
+    array_push($alerts, "<div class='py-2 alert alert-success' role='alert'>
+                    <strong >$total_uploaded file has been uploaded.</strong>
+                </div>");
     $_SESSION['alerts'] = $alerts;
 }
 if (isset($_GET['delete'])) {
