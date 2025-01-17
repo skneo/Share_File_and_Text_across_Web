@@ -48,7 +48,7 @@ include 'uploads_dir.php';
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
     <div class="container my-3 table-responsive">
-        <small>* Files older than 3 days will be deleted automatically</small>
+        <!-- <small>* Files older than 3 days will be deleted automatically</small> -->
         <table id="table_id" class="table-light table table-striped table-bordered w-100">
             <thead>
                 <tr>
@@ -75,22 +75,22 @@ include 'uploads_dir.php';
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
                             $timeDiff = $currentTime - $ctime;
-                            if ($timeDiff > 259200) {  // 3 days = 259200 seconds
-                                if (unlink("$uploads_dir/$file")) {
-                                    continue;
-                                }
-                            }
+                            // if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
+                            //     if (unlink("$uploads_dir/$file")) {
+                            //         continue;
+                            //     }
+                            // }
                             $dateTime = date("Y-m-d H:i:s", $ctime);
                             $filedownload = rawurlencode($file);
                             $size = round(filesize("$uploads_dir/" . $file) / (1024));
-                            echo "<tr>
+                            echo "<tr id='row_$sn'>
                                     <td>$sn</td>
                                     <td><a href=\"preview_file.php?file=$filedownload\">$file</a></td>
                                     <td>$size kb</td>
                                     <td>$dateTime</td>
                                     <td>
                                         <a href=\"$uploads_dir/$filedownload\" download class='me-2'>Download</a>
-                                        <a onclick=\"return confirm('Sure to delete $file ?')\" href='handle_files.php?delete=$file'>Delete</a>
+                                        <a onclick=\"deleteFile('row_$sn','$file')\" href='#'>Delete</a>
                                     </td>
                                 </tr>";
                             $sn = $sn + 1;
@@ -101,7 +101,19 @@ include 'uploads_dir.php';
             </tbody>
         </table>
     </div>
-
+    <script>
+        function deleteFile(row,fileName) {
+            if (confirm("Sure to delete " + fileName + " ?")) {
+                fetch('handle_files.php?delete=' + encodeURIComponent(fileName))
+                    .then(response => response.text())
+                    .then(data => {
+                        if (data == "deleted") {
+                            document.getElementById(row).remove();
+                        }
+                    });
+            }
+        }
+    </script>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js' integrity='sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8' crossorigin='anonymous'></script>
 </body>

@@ -39,9 +39,8 @@ if (isset($_GET['delete'])) {
     $file = "$uploads_dir/$fileName";
     if (file_exists($file)) {
         unlink($file);
-        $_SESSION['alert'] = "<div class='py-2 alert alert-success' role='alert'>
-                <strong >File deleted.</strong>
-            </div>";
+        echo "deleted";
+        exit;
     }
 }
 header('Location: share_file.php');
