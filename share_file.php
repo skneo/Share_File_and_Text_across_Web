@@ -21,16 +21,18 @@ include 'uploads_dir.php';
 <body>
     <?php
     include 'header.php';
-    if (isset($_SESSION['alert'])) {
-        echo $_SESSION['alert'];
-        unset($_SESSION['alert']);
+    if (isset($_SESSION['alerts'])) {
+        foreach ($_SESSION['alerts'] as $alert) {
+            echo $alert;
+        }
+        unset($_SESSION['alerts']);
     }
     ?>
     <center>
         <div class="container mt-2 ">
             <form action="handle_files.php" method="post" enctype="multipart/form-data">
                 <h4>Select file to upload</h4>
-                <input class="form-control my-3" style="width: 300px;" type="file" name="fileToUpload" id="fileToUpload">
+                <input class="form-control my-3" style="width: 300px;" type="file" name="fileToUpload[]" id="fileToUpload" multiple>
                 <input class="btn btn-primary" onclick="loader()" type="submit" style="width: 300px;" value="Upload File" name="submit">
             </form>
             <div class="d-flex justify-content-center my-3 d-none" id="pageLoader">
