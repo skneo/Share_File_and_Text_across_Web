@@ -48,7 +48,7 @@ include 'uploads_dir.php';
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
     <div class="container my-3 table-responsive">
-        <!-- <small>* Files older than 3 days will be deleted automatically</small> -->
+        <!-- <small>* Files older than 4 hours will be deleted automatically</small> -->
         <table id="table_id" class="table-light table table-striped table-bordered w-100">
             <thead>
                 <tr>
