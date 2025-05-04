@@ -106,11 +106,17 @@ include 'uploads_dir.php';
     <script>
         function deleteFile(row,fileName) {
             if (confirm("Sure to delete " + fileName + " ?")) {
+                event.preventDefault();
                 fetch('handle_files.php?delete=' + encodeURIComponent(fileName))
                     .then(response => response.text())
                     .then(data => {
                         if (data == "deleted") {
-                            document.getElementById(row).remove();
+                            var rowElement = document.getElementById(row);
+                            rowElement.style.transition = "opacity 1s";
+                            rowElement.style.opacity = 0;
+                            setTimeout(function() {
+                                rowElement.remove();
+                            }, 1000);
                         }
                     });
             }
