@@ -76,6 +76,7 @@ include 'uploads_dir.php';
                             if ($file == "index.php")
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
+                            // when old file deletion required
                             $timeDiff = $currentTime - $ctime;
                             if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
                                 if (unlink("$uploads_dir/$file")) {

@@ -5,6 +5,9 @@ if (!isset($_SESSION['loggedin'])) {
     exit;
 }
 $showAlert = false;
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['qr_url'])) {
+    $qr_url = $_GET['qr_url'];
+}
 ?>
 <!doctype html>
 <html lang='en'>
@@ -14,6 +17,7 @@ $showAlert = false;
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <!-- Bootstrap CSS -->
     <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="shortcut icon" type="image/x-icon" href="sharelogo.png">
     <title>Scan QR Code</title>
 </head>
@@ -30,16 +34,16 @@ $showAlert = false;
     ?>
     <center>
         <div class="container my-3">
-            <?php
-            if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['qr_url'])) {
-                $qr_url = $_GET['qr_url'];
-                $qr_url1 = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" . urlencode($qr_url);
-            }
-            echo "<b>Scan QR Code for</b> <a href='$qr_url'>$qr_url</a><br>";
-            ?>
-
+            <b>Scan QR Code for</b> <a href="<?php echo $qr_url; ?>"><?php echo $qr_url; ?></a>
             <br>
-            <img src="<?php echo $qr_url1 ?>" alt="qr_code">
+            <div id="qrcode" class="my-2 mx-2"></div>
+            <script>
+                new QRCode(document.getElementById("qrcode"), {
+                    text: "<?php echo $qr_url; ?>",
+                    width: 200,
+                    height: 200
+                });
+            </script>
         </div>
 
     </center>
