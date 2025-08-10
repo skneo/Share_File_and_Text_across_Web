@@ -106,7 +106,8 @@ if (isset($_GET['delete'])) {
     <div class="mt-3 mx-3 mb-0 text-center">
         <h4><a href="share_text.php"> All Texts </a></h4>
     </div>
-    <div style="margin-top: 0px;" class="container">
+    <div style="margin-top: 0px;" class="container my-3">
+        <div class="accordion" id="accordionExample">
         <?php
         function url_to_clickable_link($plaintext)
         {
@@ -122,20 +123,37 @@ if (isset($_GET['delete'])) {
             $rowNos = count($all_links);
         else $rowNos = 0;
         $link_keys = array_keys($all_links);
-        for ($x = 0; $x < $rowNos; $x++) {
+        for ($x = $rowNos - 1; $x >= 0; $x--) {
             $link_key = $link_keys[$x];
             $row = $all_links[$link_key];
             $url = $row[0];
             $url_desc = url_to_clickable_link($url);
             $tag = $row[1];
             $dateAdded = $row[2];
-            echo "<b>$x. $dateAdded:</b> $tag
-                  <p id='p$x' style='white-space: pre-wrap;'>$url_desc </p>
-                  <button type='button' class='btn btn-sm btn-outline-success' id='$x' onclick=\"copyToClipboard(this.id)\" >Copy</button>
-                  <a href='share_text.php?delete=$dateAdded' class='btn btn-outline-danger btn-sm' onclick=\"return confirm('Sure to delete \'$tag\'?')\">Delete</a>
-                  <hr>";
+            // echo "<b>$x. $dateAdded:</b> $tag
+            //       <p id='p$x' style='white-space: pre-wrap;'>$url_desc </p>
+            //       <button type='button' class='btn btn-sm btn-outline-success' id='$x' onclick=\"copyToClipboard(this.id)\" >Copy</button>
+            //       <a href='share_text.php?delete=$dateAdded' class='btn btn-outline-danger btn-sm' onclick=\"return confirm('Sure to delete \'$tag\'?')\">Delete</a>
+            //       <hr>";
+            echo "<div class='accordion-item'>
+                <h2 class='accordion-header'>
+                <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse$x' aria-expanded='true' aria-controls='collapse$x'>
+                  $x. $dateAdded: $tag  
+                </button>
+                </h2>
+                <div id='collapse$x' class='accordion-collapse collapse' data-bs-parent='#accordionExample'>
+                <div class='accordion-body'>
+                    <p style='white-space: pre-wrap;' id='p$x'>$url_desc </p>
+                    <div class='d-flex'>
+                        <button type='button' class='btn btn-sm btn-outline-success me-3' id='$x' onclick=\"copyToClipboard(this.id)\" >Copy</button>
+                        <a href='share_text.php?delete=$dateAdded' class='btn btn-outline-danger btn-sm' onclick=\"return confirm('Sure to delete \'$tag\'?')\">Delete</a>
+                    </div>
+                </div>
+                </div>
+            </div>";
         }
         ?>
+        </div>
     </div>
     <script>
         function copyToClipboard(element) {
