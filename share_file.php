@@ -28,20 +28,18 @@ include 'uploads_dir.php';
         unset($_SESSION['alerts']);
     }
     ?>
-    <center>
-        <div class="container mt-3 ">
-            <form action="handle_files.php" method="post" enctype="multipart/form-data">
-                <input class="form-control" style="width: 300px;" type="file" name="fileToUpload[]" id="fileToUpload" multiple required>
-                <small>* More than 1 file can be uploaded at a time</small><br>
-                <input class="btn btn-primary" onclick="loader()" type="submit" style="width: 300px;" value="Upload File" name="submit">
-            </form>
-            <div class="d-flex justify-content-center my-3 d-none" id="pageLoader">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only"></span>
-                </div>
+    <div class="container mt-2">
+        <form action="handle_files.php" method="post" enctype="multipart/form-data">
+            <label><b>Upload Files (choose or drop)</b></label>
+            <input onchange="loader(); submitBtn.click();" class="form-control w-100 p-3" style="width: 300px;" type="file" name="fileToUpload[]" id="fileToUpload" multiple required>
+            <input class="btn btn-primary d-none" id='submitBtn' type="submit" style="width: 300px;" value="Upload File" name="submit">
+        </form>
+        <div class="d-flex justify-content-center my-3 d-none" id="pageLoader">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
             </div>
         </div>
-    </center>
+    </div>
     <hr>
     <script>
         var loader = function() {
@@ -49,9 +47,9 @@ include 'uploads_dir.php';
         }
     </script>
     <h4 class="text-center"><a href="share_file.php">All Files</a> </h4>
-    <div class="container my-3 table-responsive">
-        <small>* Files older than 4 hours will be deleted automatically</small>
-        <table id="table_id" class="table-light table table-striped table-bordered w-100">
+    <div class="container mb-3 table-responsive">
+        <!-- <small>* Files older than 4 hours will be deleted automatically</small> -->
+        <table id="table_id" class="table table-sm table-striped table-bordered w-100">
             <thead>
                 <tr>
                     <th>SN</th>
@@ -76,13 +74,13 @@ include 'uploads_dir.php';
                             if ($file == "index.php")
                                 continue;
                             $ctime = filectime("$uploads_dir/$file");
-                            // when old file deletion required
-                            $timeDiff = $currentTime - $ctime;
-                            if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
-                                if (unlink("$uploads_dir/$file")) {
-                                    continue;
-                                }
-                            }
+                            //uncomment below code when old file deletion required
+                            // $timeDiff = $currentTime - $ctime;
+                            // if ($timeDiff > 14400) {  // 4 hours = 14400 seconds
+                            //     if (unlink("$uploads_dir/$file")) {
+                            //         continue;
+                            //     }
+                            // }
                             $dateTime = date("Y-m-d H:i:s", $ctime);
                             $filedownload = rawurlencode($file);
                             $size = round(filesize("$uploads_dir/" . $file) / (1024));
@@ -106,6 +104,7 @@ include 'uploads_dir.php';
     </div>
     <script>
         function deleteFile(row,fileName) {
+            event.preventDefault();
             if (confirm("Sure to delete " + fileName + " ?")) {
                 event.preventDefault();
                 fetch('handle_files.php?delete=' + encodeURIComponent(fileName))

@@ -2,14 +2,14 @@
 session_start();
 $showAlert = false;
 if (isset($_SESSION['loggedin'])) {
-    header('Location: home.php');
+    header('Location: share_file.php');
     exit;
 }
 include 'password.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['password'] == $password) {
         $_SESSION['loggedin'] = true;
-        header('Location: home.php');
+        header('Location: share_file.php');
         exit;
     } else {
         $showAlert = true;
