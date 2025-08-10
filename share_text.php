@@ -103,8 +103,9 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
     <hr>
-    <div class="mt-3 mx-3 mb-0 text-center">
+    <div class="container mt-3 mb-0 d-flex justify-content-between">
         <h4><a href="share_text.php"> All Texts </a></h4>
+        <button onclick="expandAll()" class="btn btn-sm btn-primary">Expand All</button>
     </div>
     <div style="margin-top: 0px;" class="container my-3">
         <div class="accordion" id="accordionExample">
@@ -167,6 +168,15 @@ if (isset($_GET['delete'])) {
             setTimeout(() => {
                 document.getElementById(element).innerText = 'Copy';
             }, 1000);
+        }
+        function expandAll() {
+            document.querySelectorAll('#accordionExample .accordion-collapse').forEach(function (collapse) {
+                let bsCollapse = bootstrap.Collapse.getInstance(collapse);
+                if (!bsCollapse) {
+                bsCollapse = new bootstrap.Collapse(collapse, { toggle: false });
+                }
+                bsCollapse.show();
+            });
         }
     </script>
     <!-- Option 1: Bootstrap Bundle with Popper -->
