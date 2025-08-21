@@ -1,6 +1,8 @@
 <?php
 session_start();
 $showAlert = false;
+//login user without password
+//$_SESSION['loggedin'] = true;
 if (isset($_SESSION['loggedin'])) {
     header('Location: share_file.php');
     exit;
